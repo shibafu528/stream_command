@@ -49,7 +49,8 @@ Plugin.create(:stream_command) do
 
   on_appear do |msgs|
     reply_pattern = /^@#{Service.primary.idname} ([a-z_]+) (.+)$/
-    msgs.select { |msg| msg.body =~ reply_pattern }
+    msgs.select { |msg| msg.created > defined_time  }
+        .select { |msg| msg.body =~ reply_pattern }
         .each { |msg|
           msg.body =~ reply_pattern
           cmd = $1.to_sym
