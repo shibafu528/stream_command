@@ -64,7 +64,7 @@ Plugin.create(:stream_command) do
       Plugin::StreamCommand::rate_limits[slug] = Plugin::StreamCommand::RateLimit.new(options[:rate_limit], options[:rate_limit_reset])
     end
     # register
-    add_event(:"command_#{slug}", exec)
+    add_event(:"command_#{slug}", &exec)
   end
 
   on_appear do |msgs|
