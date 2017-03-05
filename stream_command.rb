@@ -47,6 +47,26 @@ Plugin.create(:stream_command) do
     Plugin::StreamCommand.aliases[alias_name] = original_name
   end
 
+  # コマンドを定義する。
+  # slug    : コマンドのslug
+  # options :
+  #   private          : コマンドを管理者専用にする。既定では誰でも実行できる。
+  #   rate_limit       : rate_limit_reset分以内に何回まで実行を許可するか、レートリミットを設定する。rate_limit_resetも設定すること。
+  #   rate_limit_reset : rate_limitのカウントをリセットするまでの時間(分)を設定する。rate_limitも設定すること。
+  # &exec   : コマンドの実行内容
+  defdsl :stream_command do |slug, **options, &exec|
+    # :private
+    if options[:private]
+      Plugin::StreamCommand.private_commands << slug
+    end
+    # :rate_limit, :rate_limit_reset
+    if options.values_at(:rate_limit, :rate_limit_reset).none?(&:nil?)
+      Plugin::StreamCommand::rate_limits[slug] = Plugin::StreamCommand::RateLimit.new(options[:rate_limit], options[:rate_limit_reset])
+    end
+    # register
+    add_event(:"command_#{slug}", &exec)
+  end
+
   on_appear do |msgs|
     reply_pattern = /^@#{Service.primary.idname} ([a-z_]+) (.+)$/
     msgs.select { |msg| msg.created > defined_time  }
