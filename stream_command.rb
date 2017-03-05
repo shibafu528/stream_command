@@ -54,7 +54,7 @@ Plugin.create(:stream_command) do
   #   rate_limit       : rate_limit_reset分以内に何回まで実行を許可するか、レートリミットを設定する。rate_limit_resetも設定すること。
   #   rate_limit_reset : rate_limitのカウントをリセットするまでの時間(分)を設定する。rate_limitも設定すること。
   # &exec   : コマンドの実行内容
-  defdsl :stream_command do |slug, options, &exec|
+  defdsl :stream_command do |slug, **options, &exec|
     # :private
     if options[:private]
       Plugin::StreamCommand.private_commands << slug
