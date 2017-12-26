@@ -50,7 +50,7 @@ Plugin.create(:stream_command) do
       Plugin::StreamCommand::rate_limits[slug] = Plugin::StreamCommand::RateLimit.new(options[:rate_limit], options[:rate_limit_reset])
     end
     # register
-    add_event(:"command_#{slug}", &exec)
+    add_event(:"stream_command_#{slug}", &exec)
   end
 
   on_appear do |msgs|
@@ -65,7 +65,7 @@ Plugin.create(:stream_command) do
 
           if authorized?(cmd, msg) && !rate_limit_exceeded?(cmd, msg)
             Plugin::StreamCommand.put_log cmd, "@#{msg.user.idname} -- #{args}"
-            Plugin.call(:"command_#{cmd}", msg, *args)
+            Plugin.call(:"stream_command_#{cmd}", msg, *args)
           end
         }
   end
