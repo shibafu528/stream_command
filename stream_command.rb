@@ -29,7 +29,7 @@ Plugin.create(:stream_command) do
   # コマンドの別名を定義する。
   # original_name : 別名を設定したいコマンドのslug
   # alias_name    : 新しい別名のslug
-  defdsl :command_alias do |original_name, alias_name|
+  defdsl :stream_command_alias do |original_name, alias_name|
     Plugin::StreamCommand.aliases[alias_name] = original_name
   end
 
