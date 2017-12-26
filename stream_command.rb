@@ -26,20 +26,6 @@ end
 
 Plugin.create(:stream_command) do
 
-  # コマンドにレートリミットを設定する。既定では無制限。
-  # slug    : コマンドのslug
-  # count   : minutes分以内に何回まで実行を許可するか
-  # minutes : レートリミットのカウントをリセットするまでの時間
-  defdsl :command_rate_limit do |slug, count, minutes|
-    Plugin::StreamCommand.rate_limits[slug] = Plugin::StreamCommand::RateLimit.new(count, minutes)
-  end
-
-  # コマンドを管理者専用にする。既定では誰でも実行できる。
-  # slug : コマンドのslug
-  defdsl :command_private do |*slug|
-    slug.each { |s| Plugin::StreamCommand.private_commands << s }
-  end
-
   # コマンドの別名を定義する。
   # original_name : 別名を設定したいコマンドのslug
   # alias_name    : 新しい別名のslug
