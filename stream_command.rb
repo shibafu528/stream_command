@@ -76,7 +76,7 @@ Plugin.create(:stream_command) do
   def authorized?(slug, msg)
     if Plugin::StreamCommand.private_commands.include?(slug) && !msg.user.me?
       Plugin::StreamCommand.put_log 'WARN', 'Unauthorized operation', "#{slug}|@#{msg.user.idname}"
-      msg.post(message: "@#{msg.user.idname} このコマンドは本人のみ使用可能です。 (#{Time.now})")
+      compose(Service.primary, msg, body: "@#{msg.user.idname} このコマンドは本人のみ使用可能です。 (#{Time.now})")
       false
     else
       true
@@ -111,7 +111,7 @@ Plugin.create(:stream_command) do
       limit = find_limit(msg.user.idname, slug, rate_limit)
       if limit.count > limit.limit
         Plugin::StreamCommand.put_log 'RateLimit', slug, msg.user.idname, "#{limit.count}/#{limit.limit}", limit.expires
-        msg.post(message: "@#{msg.user.idname} 一時的にリクエストを受付できません。(Limit: #{limit.count}/#{limit.limit}, Expires: #{limit.expires}, Now: #{Time.now})")
+        compose(Service.primary, msg, body: "@#{msg.user.idname} 一時的にリクエストを受付できません。(Limit: #{limit.count}/#{limit.limit}, Expires: #{limit.expires}, Now: #{Time.now})")
         true
       end
     end
